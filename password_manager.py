@@ -1,4 +1,5 @@
 import csv
+from fileinput import filename
 
 
 from caesar import caesar_encrypt
@@ -32,8 +33,28 @@ def encrypt_passwords_in_file(filename: str) -> None:
 
 def change_password(filename: str, website: str, password: str) -> bool:
     """TODO: Parte 3."""
+    rows = []  
+    with open(filename, "r") as file:
+        reader = csv.reader(file)
+        for row in reader:
+            if row:
+                rows.append(row)
 
-    pass
+    found = False
+
+    for i in range(1, len(rows)): 
+        if rows[i][0].strip() == website.strip():
+            rows[i][2] = caesar_encrypt(password)
+            found = True
+
+    if not found:
+        return False
+
+    with open(filename, "w", newline="") as file:
+        writer = csv.writer(file)
+        writer.writerows(rows)
+
+    return True
 
 
 def add_login(filename: str, website_name: str, username: str, password: str) -> None:
@@ -41,5 +62,7 @@ def add_login(filename: str, website_name: str, username: str, password: str) ->
     pass
 
 if __name__ == "__main__":
-    encrypt_single_pass("example1.txt")
+    encrypt_single_pass("examples/example1.txt")
     encrypt_passwords_in_file("examples/example2.csv")
+    r=change_password("examples/example3.csv", "testsite.com", "newsecurepass")
+    print(r)
