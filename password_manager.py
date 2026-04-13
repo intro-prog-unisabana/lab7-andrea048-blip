@@ -16,16 +16,20 @@ def encrypt_single_pass(filename: str) -> None:
 
 def encrypt_passwords_in_file(filename: str) -> None:
     """TODO: Parte 2."""
-    with open(filename, "r") as file:
-        lector =csv.reader(file)
+    data = []
 
-        data= []
+    with open(filename, "r") as file:
+        lector = csv.reader(file)
+
         for row in lector:
+            if len(row) < 3:
+                continue
             data.append(row)
 
     for index, row in enumerate(data):
         if index != 0:
             row[2] = caesar_encrypt(row[2])
+
     with open(filename, "w", newline='') as file:
         escritor = csv.writer(file)
         escritor.writerows(data)
